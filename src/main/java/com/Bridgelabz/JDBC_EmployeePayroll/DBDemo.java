@@ -5,24 +5,29 @@ import java.sql.Driver;
 import java.sql.DriverManager;
 import java.util.Enumeration;
 
-public class EmployeePayroll {
 
+
+public class DBDemo {
 	
 	public static void main(String[] args) {
 
 		
 		String jdbcURL = "jdbc:mysql://localhost:3306/payroll_service?useSSL=false";
-        String userName = "root";
-        String password = "123456";
+
+		
+		String userName = "root";
+
+		String password = "123456";
 		Connection connection;
 
+		
 		try {
-			
-		Class.forName("com.mysql.cj.jdbc.Driver");
+			Class.forName("com.mysql.cj.jdbc.Driver");
 			System.out.println("Driver loaded");
 		} catch (ClassNotFoundException e) {
 			throw new IllegalStateException("Cannot find driver in classpath");
 		}
+
 		listDrivers();
 		try {
 			System.out.println("Connecting to database: " + jdbcURL);
@@ -47,4 +52,3 @@ public class EmployeePayroll {
 		}
 	}
 }
-
