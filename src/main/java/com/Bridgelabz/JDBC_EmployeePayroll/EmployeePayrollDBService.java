@@ -42,10 +42,6 @@ public class EmployeePayrollDBService {
 		return employeePayrollList;
 	}
 
-	/**
-	 * To get the details of a particular employee from the DB using
-	 * PreparedStatement Interface
-	 */
 	private void preparedStatementForEmployeeData() {
 		try {
 			Connection connection = this.getConnection();
@@ -56,14 +52,7 @@ public class EmployeePayrollDBService {
 		}
 	}
 
-	/**
-	 * Get the list of EmployeePayrollData using the assigned name setString() is
-	 * used to set the assigned name value in the sql query Return all the attribute
-	 * values listed for a particular name
-	 * 
-	 * @param name
-	 * @return
-	 */
+	
 	public List<EmployeePayrollData> getEmployeePayrollData(String name) {
 		List<EmployeePayrollData> employeePayrollList = null;
 		if (this.employeePayrollDataStatement == null)
@@ -77,7 +66,6 @@ public class EmployeePayrollDBService {
 		}
 		return employeePayrollList;
 	}
-
 
 	private List<EmployeePayrollData> getEmployeePayrollData(ResultSet resultSet) {
 		List<EmployeePayrollData> employeePayrollList = new ArrayList<>();
@@ -131,6 +119,25 @@ public class EmployeePayrollDBService {
 			e.printStackTrace();
 		}
 		return 0;
+	}
+
+	public List<EmployeePayrollData> getEmployeesInGivenDateRangeDB(String date1, String date2) {
+		String sql = String.format("SELECT * FROM employee_payroll where start between '%s' AND '%s';", date1, date2);
+		List<EmployeePayrollData> employeePayrollList = new ArrayList<EmployeePayrollData>();
+		try (Connection connection = this.getConnection();) {
+			Statement statement = connection.createStatement();
+			ResultSet resultSet = statement.executeQuery(sql);
+			while (resultSet.next()) {
+				int id = resultSet.getInt("id");
+				String name = resultSet.getString("name");
+				double salary = resultSet.getDouble("salary");
+				LocalDate startDate = resultSet.getDate("start").toLocalDate();
+				employeePayrollList.add(new EmployeePayrollData(id, name, salary, startDate));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return employeePayrollList;
 	}
 
 	

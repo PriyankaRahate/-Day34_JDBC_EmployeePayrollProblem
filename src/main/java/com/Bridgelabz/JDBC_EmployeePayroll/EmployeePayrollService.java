@@ -44,9 +44,6 @@ public class EmployeePayrollService {
 		employeePayrollList.add(new EmployeePayrollData(id, name, salary));
 	}
 
-	/**
-	 * Write payroll data to console
-	 */
 	public void writeEmployeeData(IOService ioService) {
 		if (ioService.equals(IOService.CONSOLE_IO))
 			System.out.println("Writing Employee Payroll Data to Console\n" + employeePayrollList);
@@ -54,17 +51,12 @@ public class EmployeePayrollService {
 			new EmployeePayrollFileIOService().writeData(employeePayrollList);
 	}
 
-	/**
-	 * @param ioService Print Data
-	 */
+	
 	public void printData(IOService ioService) {
 		new EmployeePayrollFileIOService().printData();
 	}
 
-	/**
-	 * @param ioService
-	 * @return number of entries
-	 */
+	
 	public long countEntries(IOService ioService) {
 		if (ioService.equals(IOService.FILE_IO))
 			return new EmployeePayrollFileIOService().countEntries();

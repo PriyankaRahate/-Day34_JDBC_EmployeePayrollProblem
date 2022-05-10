@@ -9,16 +9,10 @@ import java.util.List;
 
 public class EmployeePayrollFileIOService {
 	
-	/**
-	 * payroll file name path is given
-	 */
+	
 	public static String PAYROLL_FILE_NAME = "src/payroll-file.txt";
 
-	/**
-	 * created method writeData to write the data in the console
-	 * 
-	 * @param employeePayrollList
-	 */
+	
 	public void writeData(List<EmployeePayrollData> employeePayrollList) {
 		StringBuffer empBuffer = new StringBuffer();
 		employeePayrollList.forEach(employee -> {
@@ -32,9 +26,7 @@ public class EmployeePayrollFileIOService {
 		}
 	}
 
-	/**
-	 * method for printing the data
-	 */
+	
 	public void printData() {
 		try {
 			Files.lines(new File(PAYROLL_FILE_NAME).toPath()).forEach(System.out::println);
@@ -43,6 +35,7 @@ public class EmployeePayrollFileIOService {
 		}
 	}
 
+	
 	public long countEntries() {
 		long entries = 0;
 		try {

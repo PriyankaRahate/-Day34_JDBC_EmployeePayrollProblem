@@ -13,7 +13,6 @@ public class DBDemo {
 
 		String jdbcURL = "jdbc:mysql://localhost:3306/payroll_service?useSSL=false";
 
-		
 		String userName = "root";
 
 		
@@ -43,7 +42,8 @@ public class DBDemo {
 
 		Enumeration<Driver> driverList = DriverManager.getDrivers();
 
-				while (driverList.hasMoreElements()) {
+		
+		while (driverList.hasMoreElements()) {
 			Driver driverClass = (Driver) driverList.nextElement();
 			System.out.println("   " + driverClass.getClass().getName());
 		}
