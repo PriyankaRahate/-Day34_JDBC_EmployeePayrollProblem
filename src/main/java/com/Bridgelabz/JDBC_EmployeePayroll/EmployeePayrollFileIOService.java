@@ -1,6 +1,7 @@
 package com.Bridgelabz.JDBC_EmployeePayroll;
 
 import java.io.File;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -8,8 +9,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EmployeePayrollFileIOService {
+
+	
 	public static String PAYROLL_FILE_NAME = "src/payroll-file.txt";
 
+	
 	public void writeData(List<EmployeePayrollData> employeePayrollList) {
 		StringBuffer empBuffer = new StringBuffer();
 		employeePayrollList.forEach(employee -> {
@@ -23,6 +27,7 @@ public class EmployeePayrollFileIOService {
 		}
 	}
 
+	
 	public void printData() {
 		try {
 			Files.lines(new File(PAYROLL_FILE_NAME).toPath()).forEach(System.out::println);
@@ -31,7 +36,6 @@ public class EmployeePayrollFileIOService {
 		}
 	}
 
-	
 	public long countEntries() {
 		long entries = 0;
 		try {

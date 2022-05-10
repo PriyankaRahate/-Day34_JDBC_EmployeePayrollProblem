@@ -67,4 +67,13 @@ public class EmployeePayrollService {
 		else
 			return null;
 	}
+
+	public void updateEmployeeSalary(String string, double d) {
+		
+	}
+
+	public boolean checkEmployeePayrollInSyncWithDB(String string) {
+		
+		return false;
+	}
 }

@@ -1,15 +1,17 @@
 package com.Bridgelabz.JDBCEmployeePayroll;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
+
 import com.Bridgelabz.JDBC_EmployeePayroll.EmployeePayrollData;
+import com.Bridgelabz.JDBC_EmployeePayroll.EmployeePayrollException;
 import com.Bridgelabz.JDBC_EmployeePayroll.EmployeePayrollService;
 import com.Bridgelabz.JDBC_EmployeePayroll.EmployeePayrollService.IOService;
-
 public class EmployeePayrollServiceTest {
 
 	@Test
@@ -31,10 +33,19 @@ public class EmployeePayrollServiceTest {
 	@Test
 	
 	public void givenEmployeePayrollInDB_WhenRetrieved_ShouldMatchEmployeeCount() {
-
-		
 		EmployeePayrollService employeePayrollService = new EmployeePayrollService();
 		List<EmployeePayrollData> employeePayrollData = employeePayrollService.readData(IOService.DB_IO);
 		assertEquals(3, employeePayrollData.size());
+	}
+
+	@Test
+	
+	public void givenNewSalaryForEmployee_WhenUpdated_ShouldSyncWithDatabase() throws EmployeePayrollException {
+		EmployeePayrollService employeePayrollService = new EmployeePayrollService();
+		List<EmployeePayrollData> employeePayrollData = employeePayrollService.readData(IOService.DB_IO);
+		employeePayrollService.updateEmployeeSalary("Mark Zuckerberg", 3000000.00);
+		boolean result = employeePayrollService.checkEmployeePayrollInSyncWithDB("Mark Zuckerberg");
+		assertTrue(result);
+		System.out.println(employeePayrollData);
 	}
 }
