@@ -4,21 +4,27 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import com.Bridgelabz.Day29_IndianStatesCensusAnalyser.StateAnalyzerException.ExceptionType;
+import com.Bridgelabz.JDBC_EmployeePayroll.EmployeePayrollDBService.StatementType;
+
 public class EmployeePayrollService {
 	public enum IOService {
 		CONSOLE_IO, FILE_IO, DB_IO, REST_IO
 	}
 
+	
 	public List<EmployeePayrollData> employeePayrollList;
+	private EmployeePayrollDBService employeePayrollDBService;
 
 	public EmployeePayrollService() {
+		employeePayrollDBService = EmployeePayrollDBService.getInstance();
 	}
 
 	public EmployeePayrollService(List<EmployeePayrollData> employeePayrollList) {
+		this();
 		this.employeePayrollList = employeePayrollList;
 	}
 
-	
 	public static void main(String[] args) {
 		List<EmployeePayrollData> employeePayrollList = new ArrayList<EmployeePayrollData>();
 		EmployeePayrollService employeePayrollService = new EmployeePayrollService(employeePayrollList);
@@ -38,7 +44,9 @@ public class EmployeePayrollService {
 		employeePayrollList.add(new EmployeePayrollData(id, name, salary));
 	}
 
-	
+	/**
+	 * Write payroll data to console
+	 */
 	public void writeEmployeeData(IOService ioService) {
 		if (ioService.equals(IOService.CONSOLE_IO))
 			System.out.println("Writing Employee Payroll Data to Console\n" + employeePayrollList);
@@ -46,12 +54,17 @@ public class EmployeePayrollService {
 			new EmployeePayrollFileIOService().writeData(employeePayrollList);
 	}
 
-	
+	/**
+	 * @param ioService Print Data
+	 */
 	public void printData(IOService ioService) {
 		new EmployeePayrollFileIOService().printData();
 	}
 
-	
+	/**
+	 * @param ioService
+	 * @return number of entries
+	 */
 	public long countEntries(IOService ioService) {
 		if (ioService.equals(IOService.FILE_IO))
 			return new EmployeePayrollFileIOService().countEntries();
@@ -62,18 +75,37 @@ public class EmployeePayrollService {
 	public List<EmployeePayrollData> readData(IOService ioService) {
 		if (ioService.equals(IOService.FILE_IO))
 			return new EmployeePayrollFileIOService().readData();
-		else if (ioService.equals(IOService.DB_IO))
-			return new EmployeePayrollDBService().readData();
-		else
+		else if (ioService.equals(IOService.DB_IO)) {
+			employeePayrollList = employeePayrollDBService.readData();
+			return employeePayrollList;
+		} else
 			return null;
 	}
 
-	public void updateEmployeeSalary(String string, double d) {
-		
+	
+	public void updateEmployeeSalary(String name, double salary, StatementType type) throws EmployeePayrollException {
+		int result = employeePayrollDBService.updateEmployeeData(name, salary, type);
+		EmployeePayrollData employeePayrollData = null;
+		if (result == 0)
+			throw new EmployeePayrollException(ExceptionType.UPDATE_FAIL, "Update Failed");
+		else
+			employeePayrollData = this.getEmployeePayrollData(name);
+		if (employeePayrollData != null) {
+			employeePayrollData.salary = salary;
+		}
 	}
 
-	public boolean checkEmployeePayrollInSyncWithDB(String string) {
-		
-		return false;
+	
+	private EmployeePayrollData getEmployeePayrollData(String name) {
+		EmployeePayrollData employeePayrollData = this.employeePayrollList.stream()
+				.filter(employee -> employee.name.equals(name)).findFirst().orElse(null);
+		return employeePayrollData;
+	}
+
+	
+	public boolean checkEmployeePayrollInSyncWithDB(String name) {
+		List<EmployeePayrollData> checkList = employeePayrollDBService.getEmployeePayrollData(name);
+		return checkList.get(0).equals(getEmployeePayrollData(name));
+
 	}
 }

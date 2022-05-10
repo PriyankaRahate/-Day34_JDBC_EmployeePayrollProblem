@@ -11,15 +11,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EmployeePayrollDBService {
+	public enum StatementType {
+		PREPARED_STATEMENT, STATEMENT
+	}
 
 	private PreparedStatement employeePayrollDataStatement;
 	private static EmployeePayrollDBService employeePayrollDBService;
 
-	EmployeePayrollDBService() {
+	private EmployeePayrollDBService() {
 
 	}
 
-	
 	public static EmployeePayrollDBService getInstance() {
 		if (employeePayrollDBService == null)
 			employeePayrollDBService = new EmployeePayrollDBService();
@@ -40,7 +42,28 @@ public class EmployeePayrollDBService {
 		return employeePayrollList;
 	}
 
-	
+	/**
+	 * To get the details of a particular employee from the DB using
+	 * PreparedStatement Interface
+	 */
+	private void preparedStatementForEmployeeData() {
+		try {
+			Connection connection = this.getConnection();
+			String sql = "Select * from employee_payroll WHERE name = ?";
+			employeePayrollDataStatement = connection.prepareStatement(sql);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Get the list of EmployeePayrollData using the assigned name setString() is
+	 * used to set the assigned name value in the sql query Return all the attribute
+	 * values listed for a particular name
+	 * 
+	 * @param name
+	 * @return
+	 */
 	public List<EmployeePayrollData> getEmployeePayrollData(String name) {
 		List<EmployeePayrollData> employeePayrollList = null;
 		if (this.employeePayrollDataStatement == null)
@@ -55,7 +78,7 @@ public class EmployeePayrollDBService {
 		return employeePayrollList;
 	}
 
-	
+
 	private List<EmployeePayrollData> getEmployeePayrollData(ResultSet resultSet) {
 		List<EmployeePayrollData> employeePayrollList = new ArrayList<>();
 		try {
@@ -72,24 +95,16 @@ public class EmployeePayrollDBService {
 		return employeePayrollList;
 	}
 
-	/**
-	 * To get the details of a particular employee from the DB using
-	 * PreparedStatement Interfac
-	 */
-	private void preparedStatementForEmployeeData() {
-		try {
-			Connection connection = this.getConnection();
-			String sql = "Select * from employee_payroll WHERE name = ?";
-			employeePayrollDataStatement = connection.prepareStatement(sql);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-	}
-
 	
-	public int updateEmployeeData(String name, double salary) {
-		return this.updateDataUsingStatement(name, salary);
+	public int updateEmployeeData(String name, double salary, StatementType type) {
+		switch (type) {
+		case STATEMENT:
+			return this.updateDataUsingStatement(name, salary);
+		case PREPARED_STATEMENT:
+			return this.updateDataUsingPreparedStatement(name, salary);
+		default:
+			return 0;
+		}
 	}
 
 	
@@ -98,6 +113,20 @@ public class EmployeePayrollDBService {
 		try (Connection connection = this.getConnection();) {
 			Statement statement = connection.createStatement();
 			return statement.executeUpdate(sql);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+
+	
+	private int updateDataUsingPreparedStatement(String name, double salary) {
+		String sql = "UPDATE employee_payroll SET salary = ? WHERE NAME = ?";
+		try (Connection connection = this.getConnection();) {
+			PreparedStatement preparedStatementUpdate = connection.prepareStatement(sql);
+			preparedStatementUpdate.setDouble(1, salary);
+			preparedStatementUpdate.setString(2, name);
+			return preparedStatementUpdate.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

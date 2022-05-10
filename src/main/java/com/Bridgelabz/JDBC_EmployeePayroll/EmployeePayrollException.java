@@ -11,4 +11,10 @@ public class EmployeePayrollException extends Exception {
 		super(message);
 		this.type = type;
 	}
+
+	public EmployeePayrollException(
+			com.Bridgelabz.Day29_IndianStatesCensusAnalyser.StateAnalyzerException.ExceptionType updateFail,
+			String message) {
+		// TODO Auto-generated constructor stub
+	}
 }
